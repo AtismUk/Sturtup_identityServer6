@@ -1,12 +1,15 @@
+using Duende.IdentityServer.Test;
 using Sturtup_identityServer6;
+using UI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 builder.Services.AddIdentityServer()
     .AddInMemoryApiScopes(ConfigIdentity.ApiScopes)
     .AddInMemoryClients(ConfigIdentity.clients)
+    .AddTestUsers(TestUsers.Users)
     .AddDeveloperSigningCredential();
 
 var app = builder.Build();
@@ -19,17 +22,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseIdentityServer();
-app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseIdentityServer();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseAuthorization();
+app.MapRazorPages().RequireAuthorization();
 
 app.Run();
