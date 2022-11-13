@@ -1,4 +1,5 @@
-﻿using Duende.IdentityServer.Models;
+﻿using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,13 @@ namespace Sturtup_identityServer6
         public const string Admin = "Admin";
         public const string Employee = "Employee";
 
+        public static IEnumerable<IdentityResource> identityResources =>
+            new List<IdentityResource>
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Email(),
+                new IdentityResources.Profile()
+            };
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
@@ -23,15 +31,20 @@ namespace Sturtup_identityServer6
             {
                 new Client
                 {
-                    ClientId = "Sturtup",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientId = "sturtup",
+                    AllowedGrantTypes = GrantTypes.Code,
                     ClientSecrets =
                     {
                         new Secret("Rhfcy".Sha256())
                     },
+                    RedirectUris = { "http://localhost:5068/signin-oidc/" },
+                    PostLogoutRedirectUris = { "http://localhost:5068/signout-callback-oidc" },
                     AllowedScopes =
                     {
-                        "StartupApi" 
+                        "StartupApi",
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email
                     }
                     
                 }

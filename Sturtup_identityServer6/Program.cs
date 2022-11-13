@@ -1,11 +1,11 @@
 using Duende.IdentityServer.Test;
+using IdentityServerHost.Quickstart.UI;
 using Sturtup_identityServer6;
-using UI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 builder.Services.AddIdentityServer()
     .AddInMemoryApiScopes(ConfigIdentity.ApiScopes)
     .AddInMemoryClients(ConfigIdentity.clients)
@@ -22,12 +22,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
-app.UseIdentityServer();
-
+app.UseAuthentication();
 app.UseAuthorization();
-app.MapRazorPages().RequireAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
