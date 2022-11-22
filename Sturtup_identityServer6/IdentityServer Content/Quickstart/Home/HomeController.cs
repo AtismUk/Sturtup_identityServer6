@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Duende.IdentityServer.Services;
+using Sturtup_identityServer6.Model.DbInitializer;
 
 namespace IdentityServerHost.Quickstart.UI
 {
@@ -20,11 +21,12 @@ namespace IdentityServerHost.Quickstart.UI
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger _logger;
 
-        public HomeController(IIdentityServerInteractionService interaction, IWebHostEnvironment environment, ILogger<HomeController> logger)
+        public HomeController(IIdentityServerInteractionService interaction, IWebHostEnvironment environment, ILogger<HomeController> logger, IDIntilializer intilializer)
         {
             _interaction = interaction;
             _environment = environment;
             _logger = logger;
+            intilializer.Intializer();
         }
 
         public IActionResult Index()

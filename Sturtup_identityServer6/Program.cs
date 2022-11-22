@@ -1,6 +1,11 @@
 using Duende.IdentityServer.Test;
 using IdentityServerHost.Quickstart.UI;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Sturtup_identityServer6;
+using Sturtup_identityServer6.DbContextIdentity;
+using Sturtup_identityServer6.Model;
+using Sturtup_identityServer6.Model.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +27,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+builder.Services.AddDbContext<DbContextApp>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<DbContextApp>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IDIntilializer, Intilializer>();
+
+
+app.UseIdentityServer();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
